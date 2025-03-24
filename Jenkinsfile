@@ -5,6 +5,7 @@ pipeline {
         // GitHub repository and branch details
         REPO_URL = 'https://github.com/rmluni/springdemo.git'
         BRANCH_NAME = 'main'
+        JAR_FILE_PATH = 'C:\\Users\\ramdesai\\.jenkins\\workspace\\GitTest1\\target\\springdemo-0.0.1-SNAPSHOT.jar'
         JAR_FILE_NAME = 'your-application.jar'  // Replace with your actual JAR file name
     }
 
@@ -27,21 +28,13 @@ pipeline {
             }
         }
 
-        stage('Run JAR from GitHub') {
+        stage('Run JAR') {
             steps {
-                script {
-                    // Construct the URL to the JAR file in the GitHub repository
-                    def jarFileUrl = "https://raw.githubusercontent.com/rmluni/springdemo/${BRANCH_NAME}/target/${JAR_FILE_NAME}"
-                    echo "JAR file URL: ${jarFileUrl}"
-
-                    // Use wget or curl to download the JAR file directly from GitHub (if required)
-                    sh """
-                    curl -L -o ${JAR_FILE_NAME} ${jarFileUrl}
-                    """
-
-                    // Run the downloaded JAR file (in the same pipeline)
-                    sh "java -jar ${JAR_FILE_NAME}"
-                }
+                echo 'Deploying the application...'
+                // Run the JAR file using the 'java -jar' command in Windows
+                bat """
+                java -jar ${JAR_FILE_PATH} --server.port=${SPRING_BOOT_PORT}
+                """
             }
         }
     }
