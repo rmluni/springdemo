@@ -6,7 +6,7 @@ pipeline {
         REPO_URL = 'https://github.com/rmluni/springdemo.git'
         BRANCH_NAME = 'main'
         JAR_FILE_PATH = 'C:\\Users\\ramdesai\\.jenkins\\workspace\\GitTest1\\target\\springdemo-0.0.1-SNAPSHOT.jar'
-        JAR_FILE_NAME = 'your-application.jar'  // Replace with your actual JAR file name
+        SPRING_BOOT_PORT = '8081'  // Change this to your custom port
     }
 
     stages {
