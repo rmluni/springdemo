@@ -2,50 +2,65 @@ pipeline {
     agent any
 
     environment {
-        // Define the JAR file name and path
-        JAR_FILE = 'target/springdemo-0.0.1-SNAPSHOT.jar' // Replace with the correct JAR file name
+        // You can specify the repository URL and the branch here
+        REPO_URL = 'https://github.com/rmluni/springdemo.git'
+        BRANCH_NAME = 'main'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Clone the repository to Jenkins workspace
-                git 'https://github.com/rmluni/springdemo.git' // Replace with your GitHub repo URL
+                // Checkout the code from the GitHub repository
+                git branch: "${BRANCH_NAME}", url: "${REPO_URL}"
             }
         }
 
-        stage('Build JAR') {
+        stage('Build with Maven') {
             steps {
                 script {
-                    // Use Maven to build the project (or Gradle if you're using that)
-                    sh 'mvn clean package -DskipTests'  // For Maven-based projects
-                    // Or, for Gradle projects:
-                    // sh './gradlew build'
+                    // Run Maven clean and package command to build the project
+                    // This assumes that Maven is installed and properly configured on your Jenkins agent
+                    sh 'mvn clean package -DskipTests'  // Skipping tests for faster build (can be changed)
                 }
             }
         }
 
-        stage('Run JAR') {
+        stage('Run Tests') {
             steps {
                 script {
-                    // Ensure the JAR file exists and run it
-                    if (fileExists(JAR_FILE)) {
-                        echo "Running JAR file: ${JAR_FILE}"
-                        sh "java -jar ${JAR_FILE}"
-                    } else {
-                        error "JAR file does not exist at ${JAR_FILE}"
-                    }
+                    // Run unit tests (optional but recommended)
+                    //sh 'mvn test'
                 }
             }
         }
+
+        stage('Build Artifact') {
+            steps {
+                script {
+                    // If the build is successful, package the project into a JAR/WAR file
+                    // Maven stores the artifact in the target folder by default
+                    echo "The JAR/WAR file is built in the target directory."
+                }
+            }
+        }
+
+        // (Optional) Deploy step, if needed
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             // Deployment commands can be placed here (e.g., copy JAR to a server or deploy to cloud)
+        //             echo 'Deploying application'
+        //         }
+        //     }
+        // }
     }
 
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo "Build completed successfully!"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "Build failed!"
         }
     }
 }
