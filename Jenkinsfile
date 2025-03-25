@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Build the project using Maven (or Gradle) and package the JAR
-                    sh 'mvn clean package -DskipTests'  // For Maven-based projects
+                    bat 'mvn clean package -DskipTests'  // For Maven-based projects
                     // Alternatively, if using Gradle:
                     // sh './gradlew build'
                 }
